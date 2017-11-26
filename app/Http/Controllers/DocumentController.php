@@ -20,14 +20,18 @@ class DocumentController extends Controller
         return $document;
     }
 
+
     public function saveDocument(Request $request, Form $form)
     {
 
         //check if link exist before( so we will not store it again)
+        $contentRank = $request->get('contentRank');
+        $urlRank = $request->get('urlRank');
         if (is_null($doc = Document::where('link', $request->get('link'))->first())) {
-            $doc = $form->documents()->create($request->all());
+            $document = Document::create($request->all());
+            $doc = $form->documents()->save($document, ['contentRank' => $contentRank, 'urlRank'=> $urlRank]);
         } else {
-            $form->documents()->attach($doc->id);
+            $form->documents()->attach($doc->id, ['contentRank' => $contentRank, 'urlRank'=> $urlRank]);
         }
 
         return $doc->id;

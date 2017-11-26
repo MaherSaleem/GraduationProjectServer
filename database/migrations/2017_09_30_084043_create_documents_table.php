@@ -17,6 +17,7 @@ class CreateDocumentsTable extends Migration
             $table->increments('id');
             $table->string('link', 500);
             $table->longText('text');
+
         });
     }
 

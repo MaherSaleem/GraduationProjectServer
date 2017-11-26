@@ -26,6 +26,10 @@ class FormController extends Controller
         return $form->documents;
     }
 
+    public function getDocuments2(Form $form)
+    {
+    }
+
     public function storeForm(Request $request, Question $question)
     {
         return $question->forms()->create($request->all())->id;

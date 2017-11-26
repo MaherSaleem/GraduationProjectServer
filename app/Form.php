@@ -12,7 +12,7 @@ class Form extends Model
 
     public function documents()
     {
-        return $this->belongsToMany(Document::class);
+        return $this->belongsToMany(Document::class)->withPivot('contentRank', 'urlRank');
     }
 
     public function question()

@@ -17,6 +17,8 @@ class CreateDocumentFormTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('document_id');
             $table->unsignedInteger('form_id');
+            $table->double('contentRank')->nullable();
+            $table->double('urlRank')->nullable();
             $table->foreign('document_id')->references('id')->on('documents')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade')->onUpdate('cascade');
         });
