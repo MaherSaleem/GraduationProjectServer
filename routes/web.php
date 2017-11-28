@@ -20,7 +20,7 @@ Route::get('/forms' , 'FormController@allForms');
 Route::get('/forms/{form}' , 'FormController@getForm');
 Route::post('/forms/{question}' , 'FormController@storeForm'); //store new form for a given question_id (need text as param)
 Route::get('/forms/document/{form}' , 'FormController@getDocuments');//get documents for a given form (need form_id)
-Route::get('/forms/document2/{form}' , 'FormController@getDocuments2');//get documents for a given form (need form_id)
+Route::get('/forms/documentRank/{form}' , 'FormController@getDocumentsForRank');//get documents for a given form (need form_id)
 
 
 Route::get('/documents' , 'DocumentController@allDocuments');

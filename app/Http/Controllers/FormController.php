@@ -22,12 +22,13 @@ class FormController extends Controller
 
     public function getDocuments(Form $form)
     {
-
         return $form->documents;
     }
 
-    public function getDocuments2(Form $form)
+    public function getDocumentsForRank(Form $form)
     {
+        $formDocuments = $form->documents()->select('documents.id as id','contentRank','urlRank')->get();
+        return $formDocuments;
     }
 
     public function storeForm(Request $request, Question $question)
