@@ -12,16 +12,19 @@
         {!! method_field('put') !!}
         {{$questionText}}
 
-        @foreach($answers as $key => $answer)
-
-            <br>
-            <div class="pull-right">
-                <span style="background-color: white">
-                    {{$answer}}
-                </span>
-                <input type="checkbox" name="rank" value="{{$key+1}}">
+        <div class="row" style="direction:RTL">
+            <div class="col-md-6 pull-right" >
+                @foreach($answers as $key => $answer)
+                    <div class="form-group">
+                        <input type="checkbox" class="" name="rank" value="{{$key+1}}">
+                        <span style="color: white; font-size: 20px;" >
+                        {{$answer}}
+                        </span>
+                    </div>
+                @endforeach
             </div>
-        @endforeach
+        </div>
+        </div>
         <br>
         <button type="submit" class="button button-block"/>
         Submit</button>
