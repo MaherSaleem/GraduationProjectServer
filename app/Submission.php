@@ -18,5 +18,9 @@ class Submission extends Model
         return $this->hasMany(Answer::class);
     }
 
+    public function scopeHasRank($query){
+            return $query->whereNotNull('rank');
+    }
+
 
 }
