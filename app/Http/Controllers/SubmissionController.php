@@ -29,7 +29,7 @@ class SubmissionController extends Controller
         fclose($file_handle);
 
 
-        $command = 'java -jar -Dfile.encoding=UTF8 ' . public_path('jars/1.jar') . " \"$query\" $file";
+        $command = 'java -jar -Dfile.encoding=UTF8 ' . public_path('jars/nn.jar') . " \"$query\" $file";
         system($command);
         $file_handle = fopen($file, "r");
         $jsonData = fread($file_handle, filesize($file));
@@ -58,17 +58,15 @@ class SubmissionController extends Controller
             $ranks = $requestData['rank'];
 
             //remove None option in case it was chosen with other options
-            if ($minusOneindex = array_search('-1', $ranks)) {
+            if (($minusOneindex = array_search('-1', $ranks)) !== false) {
                 unset($ranks[$minusOneindex]);
             }
 
             if (sizeof($ranks) == 0) {// -1
                 $submission->ranks()->create(['rank' => -1]);
                 $submission->best_rank = -1;
-
-
             } else {
-                foreach ($requestData['rank'] as $rank) {
+                foreach ($ranks as $rank) {
                     $submission->ranks()->create(['rank' => $rank]);
                 }
                 $submission->best_rank = min($ranks);
@@ -100,7 +98,7 @@ class SubmissionController extends Controller
         $MRR = 100 * $sum / $numberOfSubmissions;
         $answerExistPercent = 100 * $answerExist / $numberOfSubmissions;
 
-        $avgAnswersPerQuestion = Submission::count('avg_correct_answers') / $numberOfSubmissions;
+        $avgAnswersPerQuestion = 100 * Submission::sum('avg_correct_answers') / $numberOfSubmissions;
         return view('results', compact('MRR', 'answerExistPercent', 'numberOfSubmissions', 'avgAnswersPerQuestion'));
 
     }
