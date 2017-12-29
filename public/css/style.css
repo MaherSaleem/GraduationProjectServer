@@ -69,13 +69,12 @@ a:hover {
   display: none;
 }
 
-h1 {
+h1 ,h2,h3,h4{
   text-align: center;
   color: #ffffff;
   font-weight: 300;
   margin: 0 0 40px;
 }
-
 label {
   position: absolute;
   -webkit-transform: translateY(6px);

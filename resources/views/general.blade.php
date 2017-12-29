@@ -20,7 +20,7 @@
 <div class="form">
 
     <ul class="tab-group">
-        <li class="tab active"><a href="#signup">@yield('title')</a></li>
+        <li class="tab active"><a href="#signup">Arabic Medical Question Answering System</a></li>
     </ul>
 
     <div class="tab-content">

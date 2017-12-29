@@ -30,18 +30,13 @@ Route::get('/documents/{document}', 'DocumentController@getDocument');
 Route::post('/forms/document/{form}', 'DocumentController@saveDocument');
 
 
+Route::get('/', 'SubmissionController@create');
 
 Route::get('/submissions/create', 'SubmissionController@create');
 Route::post('/submissions/store', 'SubmissionController@store');
 Route::put('/submissions/{submission}', 'SubmissionController@update');
+Route::get('/submissions/thanks', 'SubmissionController@thanks');
 
-Route::get('/results', function () {
-    $numberOfSubmissions = \App\Submission::hasRank()->count();
 
-    $sum = \App\Submission::hasRank()->where('rank', '>', '-1')->selectRaw('sum(1/rank) as sum')->first()->sum;
-    $MRR = $sum/$numberOfSubmissions;
-
-    return view('results', compact('MRR'));
-
-});
+Route::get('submissions/results', 'SubmissionController@results');
 

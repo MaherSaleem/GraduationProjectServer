@@ -19,7 +19,11 @@ class Submission extends Model
     }
 
     public function scopeHasRank($query){
-            return $query->whereNotNull('rank');
+            return $query->whereNotNull('best_rank');
+    }
+
+    public function ranks(){
+        return $this->hasMany(Rank::class);
     }
 
 

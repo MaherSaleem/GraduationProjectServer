@@ -16,7 +16,8 @@ class CreateSubmissionsTable extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('query')->nullable();
-            $table->double('rank')->nullable();
+            $table->double('best_rank')->nullable();
+            $table->double('avg_correct_answers')->nullable();
         });
 
     }
