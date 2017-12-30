@@ -54,6 +54,7 @@ class SubmissionController extends Controller
 
     public function update(Request $request, Submission $submission)
     {
+        //
         $requestData = $request->all();
 
         //TODO fix this in case of None option
