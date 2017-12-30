@@ -32,7 +32,9 @@ class SubmissionController extends Controller
 
         $command = 'java -jar -Dfile.encoding=UTF8 ' . public_path('jars/1.jar') . " \"$query\" $file";
         system($command);
-        $file_handle = fopen($file, "r");
+        //reading output from java code
+        $javaOutputFileName = $file . '.out';
+        $file_handle = fopen($javaOutputFileName, "r");
         $jsonData = fread($file_handle, filesize($file));
         logger($jsonData);
         $dataOfJson = json_decode(preg_replace('/[\r\n]+/', '$$', $jsonData), true);
@@ -46,6 +48,7 @@ class SubmissionController extends Controller
         }
         fclose($file_handle);
         unlink($file);//delete file
+        unlink($javaOutputFileName);//delete file
         return view('answers', compact('answers', 'questionText', 'submissionId'));
     }
 
