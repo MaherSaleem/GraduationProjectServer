@@ -24,18 +24,20 @@ class SubmissionController extends Controller
         //write query to file
         $query = $questionText;
         $submission = Submission::create([$questionText]);
-        $file = "Submission_" . $submission->id ;
+        $file = "Submission_" . $submission->id;
         $file_handle = fopen($file, "w");
         fwrite($file_handle, $query);
         fclose($file_handle);
 
 
+        chmod($file, 0777);
         $command = 'java -jar -Dfile.encoding=UTF8 ' . public_path('jars/1.jar') . " \"$query\" $file";
-        system($command);
-        //reading output from java code
+        exec($command);
         $javaOutputFileName = $file . '.out';
-        $file_handle = fopen($file, "r");
-        $jsonData = fread($file_handle, filesize($file));
+        chmod($javaOutputFileName, 0777);
+        //reading output from java code
+        $file_handle = fopen($javaOutputFileName, "r");
+        $jsonData = fread($file_handle, filesize($javaOutputFileName));
         logger($jsonData);
         $dataOfJson = json_decode(preg_replace('/[\r\n]+/', '$$', $jsonData), true);
         $answers = $dataOfJson['answers'];
