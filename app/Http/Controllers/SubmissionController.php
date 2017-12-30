@@ -34,7 +34,7 @@ class SubmissionController extends Controller
         system($command);
         //reading output from java code
         $javaOutputFileName = $file . '.out';
-        $file_handle = fopen($javaOutputFileName, "r");
+        $file_handle = fopen($file, "r");
         $jsonData = fread($file_handle, filesize($file));
         logger($jsonData);
         $dataOfJson = json_decode(preg_replace('/[\r\n]+/', '$$', $jsonData), true);
