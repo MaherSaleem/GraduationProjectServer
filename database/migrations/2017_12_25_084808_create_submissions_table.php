@@ -18,6 +18,7 @@ class CreateSubmissionsTable extends Migration
             $table->string('query')->nullable();
             $table->double('best_rank')->nullable();
             $table->double('avg_correct_answers')->nullable();
+            $table->timestamps();
         });
 
     }
