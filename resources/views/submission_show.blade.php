@@ -2,33 +2,46 @@
 
 @section('content')
 
-    <div id="root" class="container">
+    <div id="root" class="container align-items-center justify-content-center">
         <div class="spinner icon-spinner-10" aria-hidden="true"></div>
-        <label>
-            <input name="question" type="text" v-model="message">
-        </label>
 
-        <button @click="func" v-show="fetchDataShow" id="fetchData">Hit Me</button>
-        <p>@{{message}}</p>
 
-        <div id="answers" >
+        {{--<div class="row align-items-center" id="custom-search-form">--}}
+        {{--<input name="question" type="text" v-model="message" class="search-query mac-style input-lg">--}}
+        {{--<a @click="func" v-show="fetchDataShow" href="#" class="btn btn-default btn-group-vertical">--}}
+        {{--<span class="glyphicon glyphicon-search"></span>--}}
+        {{--</a>--}}
+        {{--</div>--}}
 
+        {{--<div class="row col-centered">--}}
+            {{--<div class="col-md-4 col-lg-offset-4">--}}
+
+            {{--</div>--}}
+        {{--</div>--}}
+
+        <div class="form-group centered">
+            <div id="custom-search-input">
+                <div class="input-group col-md-12">
+                    <input type="text" class="form-control input-lg" placeholder=""/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-info btn-lg" type="button">
+                            <i @click="func" v-show="fetchDataShow" class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
         </div>
 
-        <div v-if="isResponseReturned">
-{{--            @include('answers', 'answers')--}}
+        <div v-if="isResponseReturned" class="align-items-center pull-right">
             <h1>الرجاء اختيار الجواب الاقرب</h1>
-            <h2>@{{results.questionText}}</h2>
 
-            <form id="submission" method="post" :action="action">
+            <form id="submission" method="post" :action="action" style="direction:RTL">
                 {{method_field('PUT')}}
                 <ul>
                     <li v-for="(result,index) in results.answers">
                         <div class="form-group">
                             <input type="checkbox" class="" name="rank[]" :value=index+1>
-                            <span>
-                        @{{ result }}
-                        </span>
+                            <span v-html="result"></span>
                         </div>
 
                         <div class="form-group">
@@ -73,7 +86,7 @@
                 message: "ما هو السعال؟",
                 results: "s",
                 isResponseReturned: false,
-                action:"{{url("api/submissions")}}"
+                action: "{{url("api/submissions")}}"
             },
 
             methods: {
@@ -105,7 +118,7 @@
                         .then(function (response) {
                             this.results = response.data;
                             this.isResponseReturned = true;
-                            this.action+="/"+this.results.submissionId;
+                            this.action += "/" + this.results.submissionId;
 
                             $.unblockUI();
                         }.bind(this))
@@ -116,7 +129,7 @@
                 }
             },
             computed: {
-                fetchDataShow(){
+                fetchDataShow() {
                     return !this.isResponseReturned;
                 }
             },
