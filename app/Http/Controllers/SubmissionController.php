@@ -21,20 +21,16 @@ class SubmissionController extends Controller
     {
         $questionText = $request->get("query");
 
+        $json = "{ \"answers\":[
+  \"زياد\",
+  \"ماهر\"
+  ],
+  \"submissionId\":1,
+  \"questionText\":\"السكري\"
+}
 
-
-//        $json = "{ \"answers\":[
-//  \"زياد\",
-//  \"ماهر\"
-//  ],
-//  \"submissionId\":1,
-//  \"questionText\":\"woo\"
-//}
-//
-//";
-//        return $json;
-
-
+";
+        return $json;
         //write query to file
         $query = $questionText;
         $submission = Submission::create([$questionText]);
@@ -63,6 +59,7 @@ class SubmissionController extends Controller
         foreach ($answers as $answer) {
             $submission->answers()->create(['text' => $answer, 'rank' => $i++]);
         }
+        $dataOfJson['answers'][-2]="لا شيء مما ذكر.";
         fclose($file_handle);
         unlink($file);//delete file
         unlink($javaOutputFileName);//delete file
