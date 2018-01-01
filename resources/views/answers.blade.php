@@ -20,7 +20,7 @@
                     <div class="form-group">
                         <input type="checkbox" class="" name="rank[]" value="{{$key+1}}">
                         <span style="color: white; font-size: 20px;">
-                        {!! preg_replace('/[$$]+/', '<br>', $answer)!!}
+                        {!! $answer!!}
                         </span>
                     </div>
                 @endforeach
