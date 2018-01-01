@@ -70,9 +70,11 @@
                         }
                     });
 
-                    axios.get('/forms/'+this.message)
+                    axios.post('/api/submissions/store',{
+                        query:this.message
+                    })
                         .then(function (response) {
-                            this.results = response.data;
+                            this.results = response;
                             $.unblockUI();
                         }.bind(this))
                 .catch(function (error) {
