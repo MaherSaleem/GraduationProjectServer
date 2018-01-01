@@ -1,22 +1,89 @@
 @extends('general')
 
-@section('title', 'إدخال السؤال')
-
-
 @section('content')
-    <h1>الرجاء ادخل السؤال</h1>
 
-    <form action="{{url("/submissions/store")}}" method="post">
+    <div id="root" class="container">
 
-        <div class="field-wrap">
-            <label >
-                السؤال<span class="req">*</span>
-            </label>
-            <input type="text" name="query" required autocomplete="off" />
+        <label >
+            <input name="question" type="text" v-model="message">
+        </label>
+
+        <button @click="func">Hit Me</button>
+        <p>@{{message}}</p>
+
+        <div id="result">
+            <ul>
+                <li v-for="result in results">
+                    @{{result }}
+                </li>
+            </ul>
+           @{{results}}
         </div>
 
+    </div>
 
-        <button type="submit" class="button button-block"/>Submit</button>
+@endsection
 
-    </form>
+
+
+@section('scripts')
+    <script>
+
+        Vue.component('foobar', {
+                props: ['title', 'text'],
+                data() {
+                    return {};
+                },
+
+                methods: {},
+                template:
+                    `
+                <div>foobar</div>
+              `
+            },
+        );
+
+
+        new Vue({
+            el: "#root",
+            data: {
+                message:"hello",
+                results:"ss"
+            },
+
+            methods: {
+                func(){
+                    $.blockUI({
+                        message: '<i class="icon-spinner10 icon-3x spinner"></i>',
+                        overlayCSS: {
+                            backgroundColor: '#1B2024',
+                            opacity: 0.85,
+                            cursor: 'wait',
+                            'z-index': 99998
+                        },
+                        css: {
+                            border: 0,
+                            padding: 0,
+                            backgroundColor: 'none',
+                            color: '#fff',
+                            'z-index': 99999
+                        }
+                    });
+
+                    axios.get('/forms/'+this.message)
+                        .then(function (response) {
+                            this.results = response.data;
+                            $.unblockUI();
+                        }.bind(this))
+                .catch(function (error) {
+                            console.log(error);
+                        });
+
+                }
+            },
+            computed: {},
+            mounted() {
+            },
+        });
+    </script>
 @endsection
