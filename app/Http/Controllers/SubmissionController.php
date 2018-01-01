@@ -21,6 +21,16 @@ class SubmissionController extends Controller
     {
         $questionText = $request->get("query");
 
+        $json = "{ \"answers\":[
+  \"زياد\",
+  \"ماهر\"
+  ],
+  \"submissionId\":1,
+  \"questionText\":\"woo\"
+}
+
+";
+        return $json;
         //write query to file
         $query = $questionText;
         $submission = Submission::create([$questionText]);
@@ -61,7 +71,6 @@ class SubmissionController extends Controller
 
     public function update(Request $request, Submission $submission)
     {
-        //
         $requestData = $request->all();
 
         //TODO fix this in case of None option

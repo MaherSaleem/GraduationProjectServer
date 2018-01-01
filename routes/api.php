@@ -17,6 +17,6 @@ use Illuminate\Http\Request;
     return $request->user();
 });
 
-Route::post('/submissions/store', 'SubmissionController@store');
+Route::post('/submissions', 'SubmissionController@store');
 Route::put('/submissions/{submission}', 'SubmissionController@update');
 
