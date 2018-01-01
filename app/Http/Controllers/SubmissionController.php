@@ -21,16 +21,20 @@ class SubmissionController extends Controller
     {
         $questionText = $request->get("query");
 
-        $json = "{ \"answers\":[
-  \"زياد\",
-  \"ماهر\"
-  ],
-  \"submissionId\":1,
-  \"questionText\":\"woo\"
-}
 
-";
-        return $json;
+
+//        $json = "{ \"answers\":[
+//  \"زياد\",
+//  \"ماهر\"
+//  ],
+//  \"submissionId\":1,
+//  \"questionText\":\"woo\"
+//}
+//
+//";
+//        return $json;
+
+
         //write query to file
         $query = $questionText;
         $submission = Submission::create([$questionText]);
