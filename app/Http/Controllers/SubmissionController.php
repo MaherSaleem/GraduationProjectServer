@@ -39,10 +39,11 @@ class SubmissionController extends Controller
         $file_handle = fopen($javaOutputFileName, "r");
         $jsonData = fread($file_handle, filesize($javaOutputFileName));
         logger($jsonData);
-        $dataOfJson = json_decode(preg_replace('/[\r\n]+/', '$$', $jsonData), true);
+        $dataOfJson = json_decode(preg_replace('/[\r\n]+/', '<br>', $jsonData), true);
         $answers = $dataOfJson['answers'];
         $query = $dataOfJson['query'];
         $submissionId = $submission->id;
+        $dataOfJson['submissionId'] = $submissionId;
 
         $i = 1;
         foreach ($answers as $answer) {
@@ -51,7 +52,11 @@ class SubmissionController extends Controller
         fclose($file_handle);
         unlink($file);//delete file
         unlink($javaOutputFileName);//delete file
-        return view('answers', compact('answers', 'questionText', 'submissionId'));
+        if(!$request->ajax()){
+            return view('answers', compact('answers', 'questionText', 'submissionId'));
+        }else{
+            return $dataOfJson;
+        }
     }
 
     public function update(Request $request, Submission $submission)
