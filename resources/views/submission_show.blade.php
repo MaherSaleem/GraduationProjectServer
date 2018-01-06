@@ -29,23 +29,21 @@
 
             <form id="submission" class="form-group pull-right" method="post" :action="action" style="direction:RTL">
                 {{method_field('PUT')}}
-                {{--<ul>--}}
-                    <div class="list-group">
-
+                <ul>
                     <li v-for="(result,index) in results.answers">
                         <div class="form-group">
-                            <div>
+                            <div class="">
                                 <input type="checkbox" class="icheckbox" name="rank[]" :value=index+1>
                                 <span v-html="result"></span>
                             </div>
                         </div>
+
                         <div>
                         <span style="color: white; font-size: 20px;">
                         </span>
                         </div>
                     </li>
-                    </div>
-                {{--</ul>--}}
+                </ul>
                 <input type="submit" id="submit" class="btn btn-success ajax-submit" value="Submit response">
             </form>
 
