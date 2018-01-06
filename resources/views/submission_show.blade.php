@@ -2,54 +2,50 @@
 
 @section('content')
 
-    <div id="root" class="container align-items-center justify-content-center">
+    <div id="root" class="container align-items-center justify-content-center" style="width: auto">
         <div class="spinner icon-spinner-10" aria-hidden="true"></div>
 
-
-        {{--<div class="row align-items-center" id="custom-search-form">--}}
-        {{--<input name="question" type="text" v-model="message" class="search-query mac-style input-lg">--}}
-        {{--<a @click="func" v-show="fetchDataShow" href="#" class="btn btn-default btn-group-vertical">--}}
-        {{--<span class="glyphicon glyphicon-search"></span>--}}
-        {{--</a>--}}
-        {{--</div>--}}
-
-        {{--<div class="row col-centered">--}}
-            {{--<div class="col-md-4 col-lg-offset-4">--}}
-
-            {{--</div>--}}
-        {{--</div>--}}
-
-        <div class="form-group centered">
-            <div id="custom-search-input">
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control input-lg" placeholder=""/>
-                    <span class="input-group-btn">
+        <div class="row">
+            <div class="col-md-4 col-lg-offset-4">
+                <div class="form-group centered">
+                    <div id="custom-search-input" v-show="fetchDataShow" >
+                        <div class="input-group col-md-12" >
+                            <input type="text" id="query" class="form-control input-lg" v-model="query" @keyup.enter="func"/>
+                            <span class="input-group-btn">
                         <button class="btn btn-info btn-lg" type="button">
                             <i @click="func" v-show="fetchDataShow" class="glyphicon glyphicon-search"></i>
                         </button>
                     </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div v-if="isResponseReturned" class="align-items-center pull-right">
-            <h1>الرجاء اختيار الجواب الاقرب</h1>
 
-            <form id="submission" method="post" :action="action" style="direction:RTL">
+
+        <div v-if="isResponseReturned" class="align-items-center">
+            <h1 class="text-center">الرجاء اختيار الجواب الاقرب</h1>
+
+            <form id="submission" class="form-group pull-right" method="post" :action="action" style="direction:RTL">
                 {{method_field('PUT')}}
-                <ul>
+                {{--<ul>--}}
+                    <div class="list-group">
+
                     <li v-for="(result,index) in results.answers">
                         <div class="form-group">
-                            <input type="checkbox" class="" name="rank[]" :value=index+1>
-                            <span v-html="result"></span>
+                            <div>
+                                <input type="checkbox" class="icheckbox" name="rank[]" :value=index+1>
+                                <span v-html="result"></span>
+                            </div>
                         </div>
-
-                        <div class="form-group">
+                        <div>
                         <span style="color: white; font-size: 20px;">
                         </span>
                         </div>
                     </li>
-                </ul>
+                    </div>
+                {{--</ul>--}}
                 <input type="submit" id="submit" class="btn btn-success ajax-submit" value="Submit response">
             </form>
 
@@ -65,25 +61,11 @@
     <script>
         axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-        Vue.component('foobar', {
-                props: ['title', 'text'],
-                data() {
-                    return {};
-                },
-
-                methods: {},
-                template:
-                    `
-                <div>foobar</div>
-              `
-            },
-        );
-
 
         new Vue({
             el: "#root",
             data: {
-                message: "ما هو السعال؟",
+                query: "ما هو السعال؟",
                 results: "s",
                 isResponseReturned: false,
                 action: "{{url("api/submissions")}}"
@@ -92,7 +74,7 @@
             methods: {
                 func() {
                     $.blockUI({
-                        message: '<i class="fa fa-spinner fa-spin fa-5x fa-fw"></i><br><span class="">Please Wait around 2 Minutes</span>',
+                        query: '<i class="fa fa-spinner fa-spin fa-5x fa-fw"></i><br><span class="">Please Wait around 2 Minutes</span>',
                         overlayCSS: {
                             backgroundColor: '#1B2024',
                             opacity: 0.85,
@@ -109,7 +91,7 @@
                     });
 
                     axios.post('/api/submissions', {
-                        query: this.message
+                        query: this.query
                     }, {
                         headers: {
                             'Content-Type': 'application/json',
@@ -119,6 +101,14 @@
                             this.results = response.data;
                             this.isResponseReturned = true;
                             this.action += "/" + this.results.submissionId;
+
+                            this.$nextTick(function(){
+                                $('input.icheckbox').iCheck({
+                                    checkboxClass: 'icheckbox_square-blue',
+                                    radioClass: 'iradio_square-blue',
+                                    increaseArea: '20%' // optional
+                                });
+                            })
 
                             $.unblockUI();
                         }.bind(this))
@@ -135,6 +125,12 @@
             },
             mounted() {
             },
+
+
         });
+        Vue.nextTick(function () {
+            // DOM updated
+        })
+
     </script>
 @endsection

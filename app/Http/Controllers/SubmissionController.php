@@ -30,7 +30,7 @@ class SubmissionController extends Controller
 }
 
 ";
-        return $json;
+//        return $json;
         //write query to file
         $query = $questionText;
         $submission = Submission::create([$questionText]);
@@ -48,7 +48,7 @@ class SubmissionController extends Controller
         //reading output from java code
         $file_handle = fopen($javaOutputFileName, "r");
         $jsonData = fread($file_handle, filesize($javaOutputFileName));
-        logger($jsonData);
+//        logger($jsonData);
         $dataOfJson = json_decode(preg_replace('/[\r\n]+/', '<br>', $jsonData), true);
         $answers = $dataOfJson['answers'];
         $query = $dataOfJson['query'];
