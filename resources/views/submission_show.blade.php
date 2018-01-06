@@ -72,7 +72,7 @@
             methods: {
                 func() {
                     $.blockUI({
-                        query: '<i class="fa fa-spinner fa-spin fa-5x fa-fw"></i><br><span class="">Please Wait around 2 Minutes</span>',
+                        message : '<i class="fa fa-spinner fa-spin fa-5x fa-fw"></i><br><span class="">Please Wait around 2 Minutes</span>',
                         overlayCSS: {
                             backgroundColor: '#1B2024',
                             opacity: 0.85,

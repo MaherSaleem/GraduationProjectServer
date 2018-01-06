@@ -7,6 +7,7 @@ use App\Question;
 use App\Rank;
 use App\Submission;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class SubmissionController extends Controller
 {
@@ -20,20 +21,20 @@ class SubmissionController extends Controller
     public function store(Request $request)
     {
         $questionText = $request->get("query");
-
         $json = "{ \"answers\":[
   \"زياد\",
   \"ماهر\"
   ],
   \"submissionId\":1,
-  \"questionText\":\"السكري\"
+  \"questionText\":\"السكري\",
+  \"question_type\" : \"numeric\"
 }
 
 ";
 //        return $json;
         //write query to file
         $query = $questionText;
-        $submission = Submission::create([$questionText]);
+        $submission = Submission::create(['query' => $questionText]);
         $file = "Submission_" . $submission->id;
         $file_handle = fopen($file, "w");
         fwrite($file_handle, $query);
@@ -53,19 +54,21 @@ class SubmissionController extends Controller
         $answers = $dataOfJson['answers'];
         $query = $dataOfJson['query'];
         $submissionId = $submission->id;
+        $submission->question_type = $dataOfJson['question_type'];
+        $submission->save();
         $dataOfJson['submissionId'] = $submissionId;
 
         $i = 1;
         foreach ($answers as $answer) {
             $submission->answers()->create(['text' => $answer, 'rank' => $i++]);
         }
-        $dataOfJson['answers'][-2]="لا شيء مما ذكر.";
+        $dataOfJson['answers'][-2] = "لا شيء مما ذكر.";
         fclose($file_handle);
         unlink($file);//delete file
         unlink($javaOutputFileName);//delete file
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return view('answers', compact('answers', 'questionText', 'submissionId'));
-        }else{
+        } else {
             return $dataOfJson;
         }
     }
@@ -113,14 +116,64 @@ class SubmissionController extends Controller
 
     public function results()
     {
+        $total = [];
         $numberOfSubmissions = Submission::hasRank()->count();
-        $sum = Submission::hasRank()->where('best_rank', '>', '-1')->selectRaw('sum(1/best_rank) as sum')->first()->sum;
+        $total['numberOfSubmissions'] = $numberOfSubmissions;
+        $mrr_sum = Submission::hasRank()->where('best_rank', '>', '-1')->selectRaw('sum(1/best_rank) as sum')->first()->sum;
+        $total['mrr_summation'] = $mrr_sum;
         $answerExist = Submission::hasRank()->where('best_rank', '>', '-1')->count();
-        $MRR = 100 * $sum / $numberOfSubmissions;
+        $total['answer_exists'] = $answerExist;
+        $MRR = 100 * $mrr_sum / $numberOfSubmissions;
+        $total['mrr'] = $MRR;
         $answerExistPercent = 100 * $answerExist / $numberOfSubmissions;
+        $total['answer_exist_percent'] = $answerExistPercent;
+        $avgAnswersPerQuestion = 100 * Submission::hasRank()->sum('avg_correct_answers') / $numberOfSubmissions;
+        $total['avg_answers_per_question'] = $avgAnswersPerQuestion;
 
-        $avgAnswersPerQuestion = 100 * Submission::sum('avg_correct_answers') / $numberOfSubmissions;
-        return view('results', compact('MRR', 'answerExistPercent', 'numberOfSubmissions', 'avgAnswersPerQuestion'));
+
+        //byType
+        $measuresByType = ['list' => [
+            'numberOfSubmissions' => 0,
+            'mrr_summation' => 0,
+            'mrr' => 0,
+            'answer_exists' => 0,
+            'answer_exist_percent' => 0,
+            'avg_answers_per_question' => 0,
+        ], 'numeric' => [
+            'numberOfSubmissions' => 0,
+            'mrr_summation' => 0,
+            'mrr' => 0,
+            'answer_exists' => 0,
+            'answer_exist_percent' => 0,
+            'avg_answers_per_question' => 0,
+        ], 'paragraph' => [
+            'numberOfSubmissions' => 0,
+            'mrr_summation' => 0,
+            'mrr' => 0,
+            'answer_exists' => 0,
+            'answer_exist_percent' => 0,
+            'avg_answers_per_question' => 0,
+        ]];
+        $numberOfSubmissionsByType = Submission::hasRank()->selectRaw('COUNT(*) as count, question_type')->groupBy('question_type')->get()->pluck('count', 'question_type');
+        foreach ($numberOfSubmissionsByType as $key => $numberOfSubmissionByType){
+            $measuresByType[$key]['numberOfSubmissions'] = $numberOfSubmissionByType;
+        }
+        $mrr_sumsByType = Submission::hasRank()->where('best_rank', '>', '-1')->selectRaw('sum(1/best_rank) as sum, question_type')->groupBy('question_type')->get()->pluck('sum', 'question_type');
+        foreach ($mrr_sumsByType as $key => $mrr_sumByType){
+            $measuresByType[$key]['mrr_summation'] = $mrr_sumByType;
+            $measuresByType[$key]['mrr'] = 100 * $mrr_sumByType / $measuresByType[$key]['numberOfSubmissions'];
+        }
+        $answerExistsByType = Submission::hasRank()->where('best_rank', '>', '-1')->selectRaw('COUNT(*) as count, question_type')->groupBy('question_type')->get()->pluck('count', 'question_type');
+        foreach ($answerExistsByType as $key => $answerExistByType){
+            $measuresByType[$key]['answer_exists'] = $answerExistByType;
+            $measuresByType[$key]['answer_exist_percent'] = 100 * $answerExistByType / $measuresByType[$key]['numberOfSubmissions'];
+        }
+
+        $avgAnswersPerQuestionPerType = Submission::hasRank()->selectRaw('SUM(avg_correct_answers) as sum, question_type')->groupBy('question_type')->get()->pluck('sum', 'question_type');
+        foreach ($avgAnswersPerQuestionPerType as $key => $avgAnswerPerQuestionPerType){
+            $measuresByType[$key]['avg_answers_per_question'] = 100 * $avgAnswerPerQuestionPerType / $measuresByType[$key]['numberOfSubmissions'];
+        }
+        return view('results', compact('total', 'measuresByType'));
 
     }
 

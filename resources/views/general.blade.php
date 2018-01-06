@@ -112,7 +112,7 @@
 </head>
 
 <body>
-<div id="content">
+<div id="content" class="container">
     <div class="row">
         <div class="col-lg-16">
             <h1 class="text-center">
