@@ -5,7 +5,7 @@
 
 @section('content')
     <h1>الرجاء اختيار الجواب الاقرب</h1>
-    <h2>@{{results.questionText}}</h2>
+    <h2>@{{results.query}}</h2>
     @php
         $answers['-2'] = 'لا شيء مما ذكر';
     @endphp

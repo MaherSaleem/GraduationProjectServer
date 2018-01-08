@@ -21,18 +21,18 @@ class SubmissionController extends Controller
     public function store(Request $request)
     {
         $questionText = $request->get("query");
-        $json = "{ \"answers\":[
-  \"زياد\",
-  \"ماهر\"
-  ],
-  \"submissionId\":1,
-  \"questionText\":\"السكري\",
-  \"question_type\" : \"numeric\"
-}
-
-";
+//        $json = "{ \"answers\":[
+//  \"زياد\",
+//  \"ماهر\"
+//  ],
+//  \"submissionId\":1,
+//  \"query\":\"السكري\",
+//  \"question_type\" : \"numeric\"
+//}
+//
+//";
 //        return $json;
-        //write query to file
+//        write query to file
         $query = $questionText;
         $submission = Submission::create(['query' => $questionText]);
         $file = "Submission_" . $submission->id;
@@ -80,6 +80,9 @@ class SubmissionController extends Controller
         //TODO fix this in case of None option
         if (array_key_exists('rank', $requestData)) {
             $ranks = $requestData['rank'];
+            $ranks = collect($ranks)->map(function ($item, $key) {
+                return $item + 1;
+            })->toArray();
 
             //remove None option in case it was chosen with other options
             if (($minusOneindex = array_search('-1', $ranks)) !== false) {
@@ -100,8 +103,11 @@ class SubmissionController extends Controller
 
             $submission->avg_correct_answers = sizeof($ranks) / $submission->answers()->count();
         } else {
-            $submission->rank = -1;//to option chosen //TODO check if this is a good behaviour
-            $submission->avg_correct_answers = 0;
+            try {
+                $submission->delete();
+                return redirect('/submissions/thanks');
+            } catch (\Exception $e) {
+            }
         }
 
         $submission->save();

@@ -16,7 +16,7 @@
     @foreach($measuresByType as $key=>$measureByType)
         <div class="row">
             <div class="col-md-12 pull-left">
-                <h1>{{$key}} Type</h1>
+                <h1><u>{{$key}} Type</u></h1>
                 <h2>Total number of submissions: {{$measureByType['numberOfSubmissions']}}</h2>
                 <h2>MRR Result is {{printf("%0.1f",$measureByType['mrr'])}}%</h2>
                 <h2>Answers Found percent: {{printf("%0.1f",$measureByType['answer_exist_percent'])}}%</h2>

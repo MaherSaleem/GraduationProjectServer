@@ -10,7 +10,7 @@
                 <div class="form-group centered">
                     <div id="custom-search-input" v-show="fetchDataShow" >
                         <div class="input-group col-md-12" >
-                            <input type="text" id="query" class="form-control input-lg" v-model="query" @keyup.enter="func"/>
+                            <input type="text" id="query" class="form-control input-lg" v-model="query" @keyup.enter="func" placeholder="ما هو السعال؟"/>
                             <span class="input-group-btn">
                         <button class="btn btn-info btn-lg" type="button">
                             <i @click="func" v-show="fetchDataShow" class="glyphicon glyphicon-search"></i>
@@ -26,6 +26,7 @@
 
         <div v-if="isResponseReturned" class="align-items-center">
             <h1 class="text-center">الرجاء اختيار الجواب الاقرب</h1>
+            <h1 class="text-center">@{{results.query}}</h1>
 
             <form id="submission" class="form-group pull-right" method="post" :action="action" style="direction:RTL">
                 {{method_field('PUT')}}
@@ -33,7 +34,7 @@
                     <li v-for="(result,index) in results.answers">
                         <div class="form-group">
                             <div class="">
-                                <input type="checkbox" class="icheckbox" name="rank[]" :value=index+1>
+                                <input type="checkbox" class="icheckbox" name="rank[]" :value=index>
                                 <span v-html="result"></span>
                             </div>
                         </div>
@@ -63,13 +64,17 @@
         new Vue({
             el: "#root",
             data: {
-                query: "ما هو السعال؟",
+                query: "",
                 results: "s",
                 isResponseReturned: false,
                 action: "{{url("api/submissions")}}"
             },
 
             methods: {
+                addOne(x){
+                    console.log(x+1);
+                    return x+1;
+                },
                 func() {
                     $.blockUI({
                         message : '<i class="fa fa-spinner fa-spin fa-5x fa-fw"></i><br><span class="">Please Wait around 2 Minutes</span>',
@@ -88,7 +93,7 @@
                         }
                     });
 
-                    axios.post('/api/submissions', {
+                    axios.post("{{url('/api/submissions')}}", {
                         query: this.query
                     }, {
                         headers: {
